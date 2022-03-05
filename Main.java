@@ -5,8 +5,8 @@ import java.util.Random;
 
 public class Main {
 
-    static final int RADKY = 4;//radky = velkost ktreu fakt chci -1
-    static final int SLOUPCE = 4;
+    static final int RADKY = 2;//radky = velkost ktreu fakt chci -1
+    static final int SLOUPCE = 2;
 
     public static void main(String[] args) {
 
@@ -84,6 +84,31 @@ public class Main {
             }
         }
         System.out.println("pocet mazání "+u);
+        
+        System.out.println("maze ig");
+        boolean[] pole;
+        for(int j=0; j<= SLOUPCE*2 - 1; j++) {
+            System.out.print("_ ");
+        }
+        System.out.println();
+        for(int i=0; i <= RADKY; i++){
+            for(int j=0; j<= SLOUPCE; j++) {
+                current = maze[i][j];
+                pole = current.getWalls();
+                //System.out.print("| ");
+                if(pole[2] == true){//ma levou stenu
+                    System.out.print("|"); //█
+                }
+                if(pole[3] == true){//mad dolni stenu
+                    System.out.print("_");
+                }
+                else {
+                    System.out.print(" ");
+                }
+            }
+            System.out.print(" |");
+            System.out.println();
+        }
     }
 
     public static int[] vyberRandSouseda(int x, int y) {

@@ -2,14 +2,13 @@ package com.company;
 
 public class Cell {
 
-
     private int x, y, distance, id;
 
     private Cell parent;
 
     private boolean visited = false;
 
-    public boolean[] walls = {true, true, true, true};//top, right, left, down ??
+    public boolean[] walls = {true, true, true, true};//top, right, left, down
 
     public boolean[] getWalls() {
         return walls;
