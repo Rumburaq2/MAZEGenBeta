@@ -1,120 +1,178 @@
 package com.company;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Random;
 
-public class Cell {
-    public static final int W = 20;
 
-    private int x, y, id;
+public class Main extends JFrame {
 
-    private Cell parent;
+    static final int RADKY = 18;
+    static final int SLOUPCE = 18;
 
-    private boolean visited = false;
+    Cell[][] maze = new Cell[RADKY+1][SLOUPCE+1];
 
-    public boolean[] walls = {true, true, true, true};//top, right, left, down
+    public Main(){ //nastavi velikost okna atd. ig
 
-    public boolean[] getWalls() {
-        return walls;
+        setTitle("more funguj pls");
+        setSize(640, 640);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
 
-    public void setWalls(boolean[] walls) {
-        this.walls = walls;
-    }
+    @Override
+    public void paint(Graphics g){//vygeneruje bludiste a nakreslí ho na obrazovku
+        super.paint(g);
+        g.translate(50, 50);//dava vystup trochu od kraje
+        //kod pro kreselni
 
-    //constructor of class - mby move upwards
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
+        //vygeneruj maze ig
 
-    public int getX() {
-        return x;
-    }
+       // Cell[][] maze = new Cell[RADKY+1][SLOUPCE+1];//mozna posunout mimo funkci
 
-    public int getY() {
-        return y;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
-    public void setX(int x){ this.x = x; }
-
-    public void setY(int y){ this.y = y; }
-
-    public void removeWalls(Cell next) {
-        int i = this.x - next.x;
-        if(i == 1){//jdu nahoru
-            walls[0] = false; //horni stena pryc
-            next.walls[3] = false; //dolni strana pryc
-        }
-        else if(i == -1){//jdu dolu
-            walls[3] = false; //spodni strana pryc
-            next.walls[0] = false; //horni strana pryc
+        //fills grid with Cells - all have all 4 walls
+        for (int x = 0; x <= RADKY; x++) {
+            for (int y = 0; y <= SLOUPCE; y++) {
+                maze[x][y] = new Cell(x, y);
+            }
         }
 
-        int j = this.y - next.y;
-        if(j == -1){// jdu doprava
-            walls[1] = false; //prava stena pryc
-            next.walls[2] = false; //leva stena pryc
-        }
-        else if(j == 1){//jdu doleva
-            walls[2] = false; //leva strana pryc
-            next.walls[1] = false; //prava strana pryc
-        }
-    }
-
-    public void draw(Graphics g){
-        /*
-        int x2 = this.x *  W;//mozna current.getX() nekde
-        int y2 = this.y * W;
-
-        g.setColor(Color.BLACK);
-        if (walls[0]) {//horní check
-            g.drawLine(x2, y2, x2+W, y2);
-        }
-        if (walls[1]) {//pravá check
-            g.drawLine(x2+W, y2, x2+W, y2+W);
-        }
-        if (walls[2]) { //LEvá
-            //g.drawLine(x2+W, y2+W, x2, y2+W);
-            g.drawLine(x2, y2+W, x2, y2);
-        }
-        if (walls[3]) { //dolní
-            //g.drawLine(x2, y2+W, x2, y2);
-            g.drawLine(x2+W, y2+W, x2, y2+W);
+        Cell current;//mozna presunout
+        Cell next;
+        System.out.println("vypisuji souradnice kazde bunky");
+        for (int x = 0; x <= RADKY; x++) {
+            for (int y = 0; y <= SLOUPCE; y++) {
+                current = maze[x][y];
+                System.out.print(current.getX());
+                System.out.println(" "+ current.getY());
+            }
         }
 
-         */
-        int x = this.x;
-        int y = this.y;
+        System.out.println("vypisuji random valid souradnice");
+        //generating random coordinates of a cell to choose one
+        Random rand = new Random();
+        int upperbound = RADKY-1;//btw starting from 0 - upperbound is 1 smaller
 
-                if (walls[0]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25), 100 + (x * 25) + 25, 100 + (y * 25));
+        //generates random values
+        int random_radek = rand.nextInt(upperbound);
+        int random_sloupec = rand.nextInt(upperbound);
+
+        System.out.println(random_radek);
+        System.out.println(random_sloupec);
+        System.out.println("souradnice nahodne bunky");
+
+        current = maze[random_radek][random_sloupec];//nahodna bunka
+        current.setVisited(true);
+        next = maze[random_radek][random_sloupec];
+
+        int remaning = (RADKY+1)*(SLOUPCE+1)-1;//RADKY*SLOUPCE-1;//(radky+1)*(sloupce+1)-1
+        int[]policko;
+        int x = current.getX();
+        int y = current.getY();
+        int Nx = 0;
+        int Ny = 0;
+        int u=0;
+
+        while(remaning > 0){//dokud neporjdeme celej maze
+            x = current.getX();
+            y = current.getY();
+            policko = vyberRandSouseda(x, y);//vraci souradnice noveho souseda
+            Nx = policko[0];//nove souradnice od bunky na x, y
+            Ny = policko[1];
+            if( (Nx >= 0) && (Ny >= 0) && (Nx <= RADKY) && (Ny <= SLOUPCE)){//souradnice se fitujou do maze
+                next = maze[Nx][Ny];
+                if(next.isVisited() == false){
+                    current.removeWalls(next);
+                    u++;
+                    remaning = remaning - 1;
+                    next.setVisited(true);
                 }
-                if (walls[2]) {
-                    g.drawLine(100 + (x * 25) + 25, 100 + (y * 25), 100 + (x * 25) + 25, 100 + (y * 25) + 25);
+                current = next;
+                System.out.println(remaning);
+            }
+        }
+
+        System.out.println("vypisuji steny ig");
+        for (int z = 0; z <= RADKY; z++) {
+            for (int p = 0; p <= SLOUPCE; p++) {
+                current = maze[z][p];
+                System.out.print(current.getX());
+                System.out.println(" "+ current.getY());
+                System.out.println(Arrays.toString(current.getWalls()));
+            }
+        }
+        System.out.println("pocet mazání "+u);
+
+        System.out.println("maze ig");
+        boolean[] pole;
+        for(int j=0; j<= SLOUPCE*2 - 1; j++) {
+            System.out.print("!!");
+        }
+        System.out.println();
+        for(int i=0; i <= RADKY; i++){
+            for(int j=0; j<= SLOUPCE; j++) {
+                current = maze[i][j];
+                pole = current.getWalls();
+                //System.out.print("| ");
+                if(pole[2] == true){//ma levou stenu
+                    System.out.print("!!"); //█
                 }
-                if (walls[3]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25) + 25, 100 + (x * 25) + 25, 100 + (y * 25) + 25);
+                if(pole[3] == true){//mad dolni stenu
+                    System.out.print("_");
                 }
-                if (walls[1]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25), 100 + (x * 25), 100 + (y * 25) + 25);
+                else {
+                    System.out.print(" ");
                 }
+            }
+            System.out.print("!!");
+            System.out.println();
+        }
+        maze[0][0].walls[0] = false;
+        maze[RADKY][SLOUPCE].walls[3] = false;
+
+        //paint
+        for (int z = 0; z <= RADKY; z++) {
+            for (int p = 0; p <= SLOUPCE; p++) {
+                current = maze[z][p];
+                current.draw(g);
+            }
+        }
     }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Main view = new Main();
+                //view.setVisible(true);
 
+            }
+        });
+    }
+
+    public static int[] vyberRandSouseda(int x, int y) {
+        int[] smery = {0, 1, 2, 3}; //nahoru, doprava, doleva, dolu
+
+        Random ran = new Random();
+        int smer = ran.nextInt(4);
+        int Nx = x;
+        int Ny = y;
+
+        if(smer == 0){//nahoru
+            Nx = x - 1;
+        }
+        else if(smer == 1){ //doprava
+            Ny = y + 1;
+        }
+        else if(smer == 2) {//dolu
+            Nx = x + 1;
+        }
+        else if(smer == 3){//doleva
+            Ny = y - 1;
+        }
+        int[]pole = {Nx, Ny};
+        return pole;
+    }
 }
