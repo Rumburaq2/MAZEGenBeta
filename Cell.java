@@ -1,11 +1,9 @@
 import java.awt.*;
 
 public class Cell {
-    public static final int W = 20;
+    public static final int W = 20;//sirka jednoho ctverecku v px
 
-    private int x, y, id;
-
-    private Cell parent;
+    private int x, y;
 
     private boolean visited = false;
 
@@ -19,7 +17,6 @@ public class Cell {
         this.walls = walls;
     }
 
-    //constructor of class - mby move upwards
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
@@ -33,14 +30,6 @@ public class Cell {
         return y;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public boolean isVisited() {
         return visited;
     }
@@ -48,10 +37,6 @@ public class Cell {
     public void setVisited(boolean visited) {
         this.visited = visited;
     }
-
-    public void setX(int x){ this.x = x; }
-
-    public void setY(int y){ this.y = y; }
 
     public void removeWalls(Cell next) {
         int i = this.x - next.x;
@@ -76,8 +61,7 @@ public class Cell {
     }
 
     public void draw(Graphics g){
-
-        int x2 = this.y *  W;//mozna current.getX() nekde
+        int x2 = this.y * W;
         int y2 = this.x * W;
 
         g.setColor(Color.BLACK);
@@ -95,24 +79,5 @@ public class Cell {
             //g.drawLine(x2, y2+W, x2, y2);
             g.drawLine(x2+W, y2+W, x2, y2+W);
         }
-
-         /*
-        int x = this.x;
-        int y = this.y;
-                if (walls[0]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25), 100 + (x * 25) + 25, 100 + (y * 25));
-                }
-                if (walls[2]) {
-                    g.drawLine(100 + (x * 25) + 25, 100 + (y * 25), 100 + (x * 25) + 25, 100 + (y * 25) + 25);
-                }
-                if (walls[3]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25) + 25, 100 + (x * 25) + 25, 100 + (y * 25) + 25);
-                }
-                if (walls[1]) {
-                    g.drawLine(100 + (x * 25), 100 + (y * 25), 100 + (x * 25), 100 + (y * 25) + 25);
-                }
-         */
     }
-
-
 }
