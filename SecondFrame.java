@@ -12,20 +12,11 @@ public class SecondFrame extends JFrame{
     Cell[][] Maze = new Cell[RADKY+1][SLOUPCE+1];
 
     public SecondFrame() {
-
-        /*
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(300,300);
-        f.setLocationRelativeTo(null);//ig
-        f.setVisible(true);
-
-         */
         setTitle("Aldous-broderův algoritmus pro generování uniformních stromů v praxi");
         setSize(640, 640);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-
     }
 
     public static void main(String[] args) {
@@ -38,12 +29,11 @@ public class SecondFrame extends JFrame{
     }
 
 
-
     @Override //awt funkce myslim btw
     public void paint(Graphics g){//vygeneruje bludiste a nakreslí ho na obrazovku
         super.paint(g);
         g.translate(50, 50);//dava vystup trochu od kraje
-        Maze = mazeGen();
+        Maze = mazeGen();//btw rad bych presunul tohle mimo paint() ale pak bych to musel nechavat jako argument a nevim jak
         Cell current;
         //paint
         for (int z = 0; z <= RADKY; z++) {
@@ -53,7 +43,6 @@ public class SecondFrame extends JFrame{
             }
         }
     }
-
 
 
     /**
@@ -100,16 +89,7 @@ public class SecondFrame extends JFrame{
 
         Cell current;//mozna presunout
         Cell next;
-        System.out.println("vypisuji souradnice kazde bunky");
-        for (int x = 0; x <= RADKY; x++) {
-            for (int y = 0; y <= SLOUPCE; y++) {
-                current = maze[x][y];
-                System.out.print(current.getX());
-                System.out.println(" "+ current.getY());
-            }
-        }
 
-        System.out.println("vypisuji random valid souradnice");
         //generating random coordinates of a cell to choose one
         Random rand = new Random();
         int upperbound = RADKY-1;//btw starting from 0 - upperbound is 1 smaller
@@ -118,9 +98,6 @@ public class SecondFrame extends JFrame{
         int random_radek = rand.nextInt(upperbound);
         int random_sloupec = rand.nextInt(upperbound);
 
-        System.out.println(random_radek);
-        System.out.println(random_sloupec);
-        System.out.println("souradnice nahodne bunky");
 
         current = maze[random_radek][random_sloupec];//nahodna bunka
         current.setVisited(true);
@@ -152,46 +129,9 @@ public class SecondFrame extends JFrame{
                 System.out.println(remaning);
             }
         }
-
-        System.out.println("vypisuji steny ig");
-        for (int z = 0; z <= RADKY; z++) {
-            for (int p = 0; p <= SLOUPCE; p++) {
-                current = maze[z][p];
-                System.out.print(current.getX());
-                System.out.println(" "+ current.getY());
-                System.out.println(Arrays.toString(current.getWalls()));
-            }
-        }
-        System.out.println("pocet mazání "+u);
-
-        System.out.println("maze ig");
-        boolean[] pole;
-        for(int j=0; j<= SLOUPCE*2 - 1; j++) {
-            System.out.print("!!");
-        }
-        System.out.println();
-        for(int i=0; i <= RADKY; i++){
-            for(int j=0; j<= SLOUPCE; j++) {
-                current = maze[i][j];
-                pole = current.getWalls();
-                //System.out.print("| ");
-                if(pole[2] == true){//ma levou stenu
-                    System.out.print("!!"); //█
-                }
-                if(pole[3] == true){//mad dolni stenu
-                    System.out.print("_");
-                }
-                else {
-                    System.out.print(" ");
-                }
-            }
-            System.out.print("!!");
-            System.out.println();
-        }
-        maze[0][0].walls[0] = false;
+        maze[0][0].walls[0] = false;//start a konec ig
         maze[RADKY][SLOUPCE].walls[3] = false;
 
         return maze;
     }
-
 }
